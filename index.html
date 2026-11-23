@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>成大電機碩士考試「工程數學」教學簡報 | LLM Wiki</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <style>
+    :root {
+      --bg-canvas: #0b1120;
+      --bg-card: #111c33;
+      --bg-soft: #172542;
+      --accent: #38bdf8;
+      --accent-warm: #f59e0b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Inter", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+      background: radial-gradient(circle at top right, #172554 0%, #0b1120 55%, #060a14 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    .slide {
+      display: none;
+      animation: fadeSlide 0.28s ease-out;
+    }
+    .slide.active {
+      display: flex;
+    }
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .glass-card {
+      background: rgba(17, 28, 51, 0.82);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      backdrop-filter: blur(10px);
+    }
+    .math-pill {
+      font-family: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, monospace;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.32);
+      color: #bae6fd;
+      padding: 0.15rem 0.5rem;
+      border-radius: 0.4rem;
+      font-size: 0.92em;
+    }
+    .wiki-md h1 { font-size: 1.35rem; font-weight: 700; color: #f8fafc; margin: 0 0 0.75rem 0; }
+    .wiki-md h2 { font-size: 1.05rem; font-weight: 700; color: #38bdf8; margin: 1.1rem 0 0.45rem 0; border-bottom: 1px solid rgba(148,163,184,0.2); padding-bottom: 0.25rem; }
+    .wiki-md p { margin: 0.45rem 0; line-height: 1.65; color: #e2e8f0; font-size: 0.92rem; }
+    .wiki-md ul, .wiki-md ol { margin: 0.45rem 0 0.45rem 1.25rem; color: #e2e8f0; font-size: 0.9rem; line-height: 1.6; }
+    .wiki-md li { margin-bottom: 0.25rem; }
+    .wiki-md a { color: #38bdf8; text-decoration: underline; }
+    .wiki-md code { background: rgba(15,23,42,0.85); color: #fcd34d; padding: 0.1rem 0.35rem; border-radius: 0.25rem; font-size: 0.85em; }
+    .wiki-md table { width: 100%; border-collapse: collapse; margin: 0.75rem 0; font-size: 0.84rem; }
+    .wiki-md th, .wiki-md td { border: 1px solid rgba(148,163,184,0.25); padding: 0.45rem 0.55rem; text-align: left; }
+    .wiki-md th { background: rgba(56,189,248,0.12); color: #e0f2fe; }
+    .wiki-md blockquote { border-left: 3px solid #f59e0b; padding-left: 0.75rem; color: #cbd5e1; margin: 0.6rem 0; }
+    .wiki-chip {
+      transition: all 0.18s ease;
+    }
+    .wiki-chip:hover {
+      background: rgba(56, 189, 248, 0.24);
+      border-color: rgba(56, 189, 248, 0.65);
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+  <!-- Top Bar -->
+  <header class="sticky top-0 z-30 border-b border-slate-800/90 bg-slate-950/85 backdrop-blur-md">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-sky-500/20 border border-sky-400/40 text-sky-300 font-bold text-sm shrink-0">Σ</span>
+        <div class="truncate">
+          <div class="text-sm font-bold tracking-tight text-slate-100 truncate">成大電機「工程數學」新手教學簡報</div>
+          <div class="text-xs text-slate-400 truncate">知識來源：ncku-ee-engmath-wiki（6 篇 Raw / 7 篇 Wiki）</div>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 shrink-0">
+        <button id="btn-overview" type="button" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition">
+          總覽目錄
+        </button>
+        <button id="btn-open-wiki" type="button" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-sky-500/20 hover:bg-sky-500/30 text-sky-200 border border-sky-400/40 transition">
+          檢視 LLM Wiki
+        </button>
+      </div>
+    </div>
+    <!-- Progress Bar -->
+    <div class="w-full h-1 bg-slate-900">
+      <div id="progress-bar" class="h-full bg-gradient-to-r from-sky-400 to-amber-400 transition-all duration-300" style="width: 10%;"></div>
+    </div>
+  </header>
+
+  <!-- Main Slide Stage -->
+  <main class="flex-1 flex items-center justify-center px-4 py-6 md:py-8">
+    <div class="w-full max-w-5xl">
+
+      <!-- SLIDE 1: Cover -->
+      <section class="slide active flex-col justify-between glass-card rounded-2xl p-7 md:p-12 min-h-[540px] shadow-2xl" data-title="封面：從零看懂成大電機工程數學" data-wiki-ref="overview.md">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <span class="px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/15 text-amber-300 border border-amber-400/30">
+            TAICA 生成式 AI 第 10 週作業 · LLM Wiki 教學簡報
+          </span>
+          <button type="button" class="wiki-chip px-2.5 py-1 rounded-md text-xs text-sky-300 bg-sky-500/10 border border-sky-400/30" data-open-doc="wiki/overview.md">
+            對應條目：wiki/overview.md
+          </button>
+        </div>
+
+        <div class="my-8 space-y-5">
+          <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight text-white">
+            從零看懂成大電機<br />
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-amber-300">「工程數學」五大核心工具</span>
+          </h1>
+          <p class="text-base md:text-lg text-slate-300 max-w-2xl leading-relaxed">
+            就算還沒修過工程數學，也能用 10 頁簡報一次搞懂：為什麼電機研究所都要考這五個單元？它們各自解決什麼真實工程問題？又怎麼跟「自動控制」串成一套知識系統？
+          </p>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-3 pt-4 border-t border-slate-700/60">
+          <div class="rounded-xl bg-slate-900/70 p-3 border border-slate-800">
+            <div class="text-xs text-sky-400 font-semibold">01 · ODE</div>
+            <div class="text-sm font-medium text-slate-200 mt-0.5">描述動態變化</div>
+          </div>
+          <div class="rounded-xl bg-slate-900/70 p-3 border border-slate-800">
+            <div class="text-xs text-sky-400 font-semibold">02 · Laplace</div>
+            <div class="text-sm font-medium text-slate-200 mt-0.5">微積分變代數</div>
+          </div>
+          <div class="rounded-xl bg-slate-900/70 p-3 border border-slate-800">
+            <div class="text-xs text-sky-400 font-semibold">03 · Fourier</div>
+            <div class="text-sm font-medium text-slate-200 mt-0.5">拆解頻率配方</div>
+          </div>
+          <div class="rounded-xl bg-slate-900/70 p-3 border border-slate-800">
+            <div class="text-xs text-sky-400 font-semibold">04 · 線性代數</div>
+            <div class="text-sm font-medium text-slate-200 mt-0.5">找出系統主軸</div>
+          </div>
+          <div class="rounded-xl bg-slate-900/70 p-3 border border-slate-800 col-span-2 md:col-span-1">
+            <div class="text-xs text-sky-400 font-semibold">05 · 複變函數</div>
+            <div class="text-sm font-medium text-slate-200 mt-0.5">繞道解難積分</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 2: Why Engineering Math -->
+      <section class="slide flex-col justify-between glass-card rounded-2xl p-7 md:p-10 min-h-[540px] shadow-2xl" data-title="為什麼電機工程離不開工程數學？" data-wiki-ref="overview.md">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <span class="text-xs font-bold uppercase tracking-wider text-sky-400">Part 0 · 全域地圖</span>
+          <button type="button" class="wiki-chip px-2.5 py-1 rounded-md text-xs text-sky-300 bg-sky-500/10 border border-sky-400/30" data-open-doc="wiki/overview.md">
+            來源：wiki/overview.md（R01）
+          </button>
+        </div>
+
+        <h2 class="text-2xl md:text-3xl font-bold text-white mb-3">為什麼電機所考試都要考「工程數學」？</h2>
+        <p class="text-slate-300 text-sm md:text-base mb-6">
+          依據<a href="https://exam.lib.ncku.edu.tw/master_subject.php?department_code=EC15" target="_blank" rel="noopener" class="text-sky-300 underline">成大圖書館電機系碩士班考古題（75–115 學年度）</a>與<a href="https://collego.edu.tw/Highschool/MajorIntro?current_major_id=9&collegeFrom=2" target="_blank" rel="noopener" class="text-sky-300 underline">ColleGo! 電機工程學類課程地圖</a>，工程數學不是考背公式，而是把「電路、訊號、控制系統」翻譯成數學後，挑選最省力工具的總稱。
+        </p>
+
+        <div class="grid md:grid-cols-3 gap-4 flex-1">
+          <div class="rounded-xl bg-slate-900/75 border border-slate-800 p-5 flex flex-col justify-between">
+            <div>
+              <div class="text-amber-400 text-xs font-bold mb-1">1. 先寫出物理現象</div>
+              <h3 class="text-lg font-bold text-white mb-2">時域模型（ODE）</h3>
+              <p class="text-sm text-slate-300 leading-relaxed">
+                電容充放電、馬達轉速、彈簧避震器，寫成物理定律都是「變化率」，也就是常微分方程。
+              </p>
+            </div>
+            <div class="mt-4 text-xs text-slate-400">核心問題：系統下一秒會怎麼動？</div>
+          </div>
+
+          <div class="rounded-xl bg-slate-900/75 border border-slate-800 p-5 flex flex-col justify-between">
+            <div>
+              <div class="text-sky-400 text-xs font-bold mb-1">2. 換個視角降維打擊</div>
+              <h3 class="text-lg font-bold text-white mb-2">轉換域（Laplace / Fourier）</h3>
+              <p class="text-sm text-slate-300 leading-relaxed">
+                直接算微積分太慢？轉到 <span class="math-pill">s 域</span> 變四則運算，或轉到 <span class="math-pill">頻率域</span> 看清訊號成分。
+              </p>
+            </div>
+            <div class="mt-4 text-xs text-slate-400">核心問題：怎麼算最快、濾掉雜訊？</div>
+          </div>
+
+          <div class="rounded-xl bg-slate-900/75 border border-slate-800 p-5 flex flex-col justify-between">
+            <div>
+              <div class="text-emerald-400 text-xs font-bold mb-1">3. 處理多變數與棘手積分</div>
+              <h3 class="text-lg font-bold text-white mb-2">矩陣與複數平面</h3>
+              <p class="text-sm text-slate-300 leading-relaxed">
+                多顆感測器耦合用「線性代數對角化」拆開；實數軸算不出來的積分，繞進「複數平面」用留數定理秒殺。
+              </p>
+            </div>
+            <div class="mt-4 text-xs text-slate-400">核心問題：多維系統穩不穩定？</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 3: ODE -->
+      <section class="slide flex-col justify-between glass-card rounded-2xl p-7 md:p-10 min-h-[540px] shadow-2xl" data-title="單元一：常微分方程 ODE" data-wiki-ref="ode.md">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <span class="text-xs font-bold uppercase tracking-wider text-sky-400">Part 1 · 常微分方程（ODE）</span>
+          <button type="button" class="wiki-chip px-2.5 py-1 rounded-md text-xs text-sky-300 bg-sky-500/10 border border-sky-400/30" data-open-doc="wiki/ode.md">
+            來源：wiki/ode.md（R02）
+          </button>
+        </div>
+
+        <h2 class="text-2xl md:text-3xl font-bold text-white mb-2">ODE：用現在的狀態，預測下一秒的變化</h2>
+        <p class="text-slate-300 text-sm md:text-base mb-5">
+          把電容充電（一階）或車子避震器彈跳（二階）寫成數學式，就是 <span class="math-pill">a y'' + b y' + c y = g(t)</span>。總解永遠由「系統天性 <span class="math-pill">y_h</span>」加上「外力強迫 <span class="math-pill">y_p</span>」組成（來源：<a href="https://tutorial.math.lamar.edu/classes/de/de.aspx" target="_blank" rel="noopener" class="text-sky-300 underline">Paul's Notes</a>）。
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-5 flex-1">
+          <div class="rounded-xl bg-slate-900/75 border border-slate-800 p-5 space-y-3">
+            <h3 class="text-base font-bold text-amber-300">二階系統的三種「天性」（特徵根決定）</h3>
+            <p class="text-xs text-slate-400">解特徵方程式 <span class="math-pill">a r² + b r + c = 0</span>：</p>
+            <div class="space-y-2.5 text-sm">
+              <div class="p-3 rounded-lg bg-slate-800/80 border-l-4 border-emerald-400">
+                <div class="font-semibold text-white">1. 兩相異實根 → 過阻尼（Overdamped）</div>
+                <div class="text-slate-300 text-xs mt-0.5">像在濃糖漿裡關門：慢慢平滑歸位，完全不晃動。</div>
+              </div>
+              <div class="p-3 rounded-lg bg-slate-800/80 border-l-4 border-sky-400">
+                <div class="font-semibold text-white">2. 重根 → 臨界阻尼（Critically Damped）</div>
+                <div class="text-slate-300 text-xs mt-0.5">最快回到平衡且不震盪；解要補乘 <span class="math-pill">t</span> 維持線性獨立。</div>
+              </div>
+              <div class="p-3 rounded-lg bg-slate-800/80 border-l-4 border-amber-400">
+                <div class="font-semibold text-white">3. 共軛複根 → 欠阻尼（Underdamped）</div>
+                <div class="text-slate-300 text-xs mt-0.5">像撥動吉他弦：先來回震盪（sin/cos），再隨指數衰減。</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="rounded-xl bg-slate-900/75 border border-slate-800 p-5 flex flex-col justify-between">
+            <div>
+              <h3 class="text-base font-bold text-sky-300 mb-3">新手三步解題 SOP</h3>
+              <ol class="space-y-2.5 text-sm text-slate-200 list-decimal list-inside">
+                <li><strong>先判斷階數</strong>：一階先試分離變數或積分因子；二階常係數寫出特徵方程式。</li>
+                <li><strong>拆成齊性解 + 特解</strong>：用待定係數法或參數變換法求外力響應 <span class="math-pill">y_p</span>。</li>
+                <li><strong>代入初始條件</strong>：用 <span class="math-pill">y(0), y'(0)</span> 算出未定常數。</li>
+              </ol>
+            </div>
+            <div class="mt-4 p-3 rounded-lg bg-rose-500/10 border border-rose-400/30 text-xs text-rose-200">
+              <strong>考場避雷：</strong>如果猜測的特解 <span class="math-pill">y_p</span> 跟齊性解重複，一定要乘上 <span class="math-pill">t</span> 修正，否則代回去會全部消掉變成 0！
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 4: Laplace + Interactive Simulator -->
+      <section class="slide flex-col justify-between glass-card rounded-2xl p-7 md:p-10 min-h-[540px] shadow-2xl" data-title="單元二：拉普拉斯轉換與互動阻尼模擬" data-wiki-ref="laplace.md">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <span class="text-xs font-bold uppercase tracking-wider text-sky-400">Part 2 · 拉普拉斯轉換與摺積</span>
+          <button type="button" class="wiki-chip px-2.5 py-1 rounded-md text-xs text-sky-300 bg-sky-500/10 border border-sky-400/30" data-open-doc="wiki/laplace.md">
+            來源：wiki/laplace.md（R03）
+          </button>
+        </div>
+
+        <h2 class="text-2xl md:text-3xl font-bold text-white mb-2">Laplace 轉換：把微積分變四則運算的翻譯機</h2>
+        <p class="text-slate-300 text-sm mb-4">
+          把時域微分方程取 Laplace 轉換後，微分變成乘上 <span class="math-pill">s</span>、初始條件自動帶入，解完代數再查表逆轉換（或用摺積定理 <span class="math-pill">L⁻¹{F(s)G(s)} = f * g</span>）回到時域（來源：<a href="https://tutorial.math.lamar.edu/classes/de/ivpwithlaplace.aspx" target="_blank" rel="noopener" class="text-sky-300 underline">Paul's Notes IVP</a>）。
+        </p>
+
+        <div class="grid md:grid-cols-12 gap-5 items-stretch flex-1">
+          <div class="md:col-span-5 rounded-xl bg-slate-900/75 border border-slate-800 p-4 flex flex-col justify-between">
+            <div class="space-y-2.5 text-sm">
+              <div class="font-bold text-amber-300">三步解決初值問題（IVP）</div>
+              <div class="p-2.5 rounded-lg bg-slate-800/70">
+                <span class="text-sky-400 font-bold">Step 1</span> 轉換：<span class="math-pill">L{y'} = sY(s) - y(0)</span>
+              </div>
+              <div class="p-2.5 rounded-lg bg-slate-800/70">
+                <span class="text-sky-400 font-bold">Step 2</span> 代數解出 <span class="math-pill">Y(s)</span> 並部分分式展開
+              </div>
+              <div class="p-2.5 rounded-lg bg-slate-800/70">
+                <span class="text-sky-400 font-bold">Step 3</span> 查表逆轉換或使用<a href="https://tutorial.math.lamar.edu/classes/de/convolutionintegrals.aspx" target="_blank" rel="noopener" class="text-sky-300 underline">摺積積分</a>
+              </div>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-slate-800">
+              <div class="flex items-center justify-between text-xs mb-1.5">
+                <span class="text-slate-300 font-medium">互動調整阻尼比 ζ（觀察 s 域極點如何決定波形）</span>
+                <span id="zeta-val" class="font-mono font-bold text-amber-300">0.30</span>
+              </div>
+              <input id="zeta-slider" type="range" min="0.1" max="1.8" step="0.05" value="0.30" class="w-full accent-sky-400 cursor-pointer" />
+              <div id="zeta-status" class="text-xs text-sky-300 mt-1.5 font-medium">欠阻尼（共軛複極點）：明顯震盪後收斂</div>
+            </div>
+          </div>
+
+          <div class="md:col-span-7 rounded-xl bg-slate-950/90 border border-slate-800 p-4 flex flex-col">
+            <div class="flex items-center justify-between text-xs text-slate-400 mb-2">
+              <span>二階系統標準轉移函數 <span class="math-pill">G(s) = ωn² / (s² + 2ζωn s + ωn²)</span> 步階響應</span>
+              <span class="text-amber-300">目標值 = 1.0</span>
+            </div>
+            <div class="relative flex-1 min-h-[220px]">
+              <canvas id="laplace-canvas" class="w-full h-full rounded-lg"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 5: Fourier + Interactive Harmonic Synthesizer -->
+      <section class="slide flex-col justify-between glass-card rounded-2xl p-7 md:p-10 min-h-[540px] shadow-2xl" data-title="單元三：傅立葉分析與方波合成互動" data-wiki-ref="fourier.md">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <span class="text-xs font-bold uppercase tracking-wider text-sky-400">Part 3 · 傅立葉級數與轉換</span>
+          <button type="button" class="wiki-chip px-2.5 py-1 rounded-md text-xs text-sky-300 bg-sky-500/10 border border-sky-400/30" data-open-doc="wiki/fourier.md">
+            來源：wiki/fourier.md（R04）
+          </button>
+        </div>
+
+        <h2 class="text-2xl md:text-3xl font-bold text-white mb-2">傅立葉分析：任何波形都能用正弦波拼出來</h2>
+        <p class="text-slate-300 text-sm mb-4">
+          就像音樂等化器（EQ）把聲音拆成低音與高音，傅立葉級數把週期訊號拆成不同頻率正弦波的疊加，讓線性系統可用「疊加原理」逐頻求解（來源：<a href="https://ocw.mit.edu/courses/18-03sc-differential-equations-fall-2011/pages/unit-iii-fourier-series-and-laplace-transform/fourier-series-basics/" target="_blank" rel="noopener" class="text-sky-300 underline">MIT OCW 18.03SC</a>）。
+        </p>
+
+        <div class="grid md:grid-cols-12 gap-5 items-stretch flex-1">
+          <div class="md:col-span-7 rounded-xl bg-slate-950/90 border border-slate-800 p-4 flex flex-col">
+            <div class="flex items-center justify-between text-xs text-slate-400 mb-2">
+              <span>奇函數方波合成：<span class="math-pill">f(t) = (4/π) Σ sin((2k-1)t) / (2k-1)</span></span>
+              <span class="text-sky-300">虛線 = 理想方波</span>
+            </div>
+            <div class="relative flex-1 min-h-[220px]">
+              <canvas id="fourier-canvas" class="w-full h-full rounded-lg"></canvas>
+            </div>
+          </div>
+
+          <div class="md:col-span-5 rounded-xl bg-slate-900/75 border border-slate-800 p-4 flex flex-col justify-between">
+            <div class="space-y-3">
+              <div>
+                <div class="flex items-center justify-between text-xs mb-1.5">
+                  <span class="text-slate-300 font-medium">拖動疊加諧波數量（N）</span>
+                  <span id="harmonic-val" class="font-mono font-bold text-amber-300">N = 3 個奇次諧波</span>
+                </div>
+                <input id="harmonic-slider" type="range" min="1" max="15" step="1" value="3" class="w-full accent-amber-400 cursor-pointer" />
+                <div class="text-xs text-slate-400 mt-1">諧波越多越接近方波，但邊緣會保留約 9% 的「吉布斯現象」凸起。</div>
+              </div>
+
+              <div class="p-3 rounded-lg bg-slate-800/75 text-xs space-y-1.5 text-slate-200">
+                <div class="font-bold text-sky-300">考場省時捷徑：奇偶對稱性</div>
+                <div>• <strong>偶函數</strong>（左右對稱）→ 只算 <span class="math-pill">a_n</span>（cos），<span class="math-pill">b_n = 0</span></div>
+                <div>• <strong>奇函數</strong>（原點對稱）→ 只算 <span class="math-pill">b_n</span>（sin），<span class="math-pill">a_0 = a_n = 0</span></div>
+              </div>
+            </div>
+
+            <div class="mt-3 p-3 rounded-lg bg-amber-500/10 border border-amber-400/30 text-xs text-amber-200">
+              <strong>延伸到非週期訊號：</strong>當週期 T → ∞，離散的諧波係數就連成連續頻譜，成為通訊與訊號處理核心——傅立葉轉換。
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 6: Linear Algebra -->
+      <section class="slide flex-col justify-between glass-card rounded-2xl p-7 md:p-10 min-h-[540px] shadow-2xl" data-title="單元四：線性代數（特徵值、對角化與 SVD）" data-wiki-ref="linear-algebra.md">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <span class="text-xs font-bold uppercase tracking-wider text-sky-400">Part 4 · 線性代數核心</span>
+          <button type="button" class="wiki-chip px-2.5 py-1 rounded-md text-xs text-sky-300 bg-sky-500/10 border border-sky-400/30" data-open-doc="wiki/linear-algebra.md">
+            來源：wiki/linear-algebra.md（R05）
+          </button>
+        </div>
+
+        <h2 class="text-2xl md:text-3xl font-bold text-white mb-2">特徵值與 SVD：找出多維系統「不偏轉的主軸」</h2>
+        <p class="text-slate-300 text-sm md:text-base mb-5">
+          當系統有好幾個互相牽連的變數時，矩陣變換會讓向量又轉又拉；唯有沿著<strong>特徵向量</strong>方向，矩陣只做純伸縮 <span class="math-pill">Ax = λx</span>（來源：<a href="https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/pages/least-squares-determinants-and-eigenvalues/diagonalization-and-powers-of-a/" target="_blank" rel="noopener" class="text-sky-300 underline">MIT OCW 18.06SC</a>）。
+        </p>
+
+        <div class="grid md:grid-cols-3 gap-4 flex-1">
+          <div class="rounded-xl bg-slate-900/75 border border-slate-800 p-5 flex flex-col justify-between">
+            <div>
+              <div class="text-xs font-bold text-sky-400 mb-1">1. 矩陣對角化</div>
+              <div class="text-lg font-bold text-white mb-2"><span class="math-pill">A = S Λ S⁻¹</span></div>
+              <p class="text-sm text-slate-300 leading-relaxed">
+                把糾纏的座標系換到特徵向量上，讓矩陣高次方 <span class="math-pill">Aᵏ = S Λᵏ S⁻¹</span> 與矩陣指數 <span class="math-pill">e^(At)</span> 瞬間變成對角線直接算。
+              </p>
+            </div>
+            <div class="mt-3 text-xs text-amber-300">條件：需有 n 個線性獨立特徵向量</div>
+          </div>
+
+          <div class="rounded-xl bg-slate-900/75 border border-slate-800 p-5 flex flex-col justify-between">
+            <div>
+              <div class="text-xs font-bold text-emerald-400 mb-1">2. 微分方程組解耦</div>
+              <div class="text-lg font-bold text-white mb-2"><span class="math-pill">u'(t) = A u(t)</span></div>
+              <p class="text-sm text-slate-300 leading-relaxed">
+                高階 ODE 改寫成狀態矩陣後，解即為 <span class="math-pill">u(t) = e^(At) u(0)</span>。特徵值實部全小於 0，代表系統穩定收斂。
+              </p>
+            </div>
+            <div class="mt-3 text-xs text-slate-400">不可對角化時改用 Jordan Form</div>
+          </div>
+
+          <div class="rounded-xl bg-slate-900/75 border border-slate-800 p-5 flex flex-col justify-between">
+            <div>
+              <div class="text-xs font-bold text-amber-400 mb-1">3. 奇異值分解（SVD）</div>
+              <div class="text-lg font-bold text-white mb-2"><span class="math-pill">A = U Σ Vᵀ</span></div>
+              <p class="text-sm text-slate-300 leading-relaxed">
+                不限方陣！任意 m×n 矩陣都能拆成「旋轉 → 伸縮 → 旋轉」，奇異值由 <span class="math-pill">AᵀA</span> 的特徵值開根號取得（<a href="https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/pages/positive-definite-matrices-and-applications/singular-value-decomposition/" target="_blank" rel="noopener" class="text-sky-300 underline">MIT SVD</a>）。
+              </p>
+            </div>
+            <div class="mt-3 text-xs text-emerald-300">應用：最小平方法、影像壓縮、降維</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 7: Complex Analysis -->
+      <section class="slide flex-col justify-between glass-card rounded-2xl p-7 md:p-10 min-h-[540px] shadow-2xl" data-title="單元五：複變函數與留數定理" data-wiki-ref="complex-analysis.md">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <span class="text-xs font-bold uppercase tracking-wider text-sky-400">Part 5 · 複變函數與留數定理</span>
+          <button type="button" class="wiki-chip px-2.5 py-1 rounded-md text-xs text-sky-300 bg-sky-500/10 border border-sky-400/30" data-open-doc="wiki/complex-analysis.md">
+            來源：wiki/complex-analysis.md（R06）
+          </button>
+        </div>
+
+        <h2 class="text-2xl md:text-3xl font-bold text-white mb-2">留數定理：圍住「奇點」，實數難題瞬間有解</h2>
+        <p class="text-slate-300 text-sm md:text-base mb-5">
+          在複數平面畫一條封閉圍欄 C：如果裡面處處光滑（解析），積分必為 0；只要抓出圍欄裡的「奇點（分母為 0）」，把留數相加乘上 <span class="math-pill">2πi</span> 就是答案（來源：<a href="https://ocw.mit.edu/courses/18-04-complex-variables-with-applications-spring-2018/3c58ce71ec6f7573804221d76158a0bd_MIT18_04S18_topic8.pdf" target="_blank" rel="noopener" class="text-sky-300 underline">MIT OCW 18.04</a>）。
+        </p>
+
+        <div class="grid md:grid-cols-12 gap-5 items-center flex-1">
+          <div class="md:col-span-5 rounded-xl bg-slate-950/90 border border-slate-800 p-4 flex flex-col items-center justify-center">
+            <svg viewBox="0 0 320 210" class="w-full max-w-[300px] h-auto" aria-label="複數平面上半圓封閉路徑與奇點示意圖">
+              <defs>
+                <marker id="arrow" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                  <path d="M 0 1 L 10 5 L 0 9 z" fill="#38bdf8" />
+                </marker>
+              </defs>
+              <!-- Axes -->
+              <line x1="20" y1="155" x2="300" y2="155" stroke="#475569" stroke-width="1.5" />
+              <line x1="160" y1="20" x2="160" y2="195" stroke="#475569" stroke-width="1.5" />
+              <text x="275" y="172" fill="#94a3b8" font-size="11">Re(z)</text>
+              <text x="166" y="30" fill="#94a3b8" font-size="11">Im(z)</text>
+              <!-- Semicircle Contour C -->
+              <path d="M 60 155 L 260 155 A 100 100 0 0 0 60 155" fill="rgba(56,189,248,0.12)" stroke="#38bdf8" stroke-width="2.5" marker-mid="url(#arrow)" />
+              <text x="230" y="75" fill="#38bdf8" font-size="12" font-weight="bold">路徑 C</text>
+              <!-- Poles inside -->
+              <circle cx="125" cy="105" r="5" fill="#f59e0b" />
+              <text x="95" y="95" fill="#fcd34d" font-size="11" font-weight="bold">z₁（圈內✓）</text>
+              <circle cx="195" cy="115" r="5" fill="#f59e0b" />
+              <text x="192" y="102" fill="#fcd34d" font-size="11" font-weight="bold">z₂（圈內✓）</text>
+              <!-- Pole outside -->
+              <circle cx="160" cy="182" r="4.5" fill="#f43f5e" />
+              <text x="172" y="186" fill="#fda4af" font-size="11">z₃（圈外✕不計）</text>
+            </svg>
+            <div class="text-xs text-slate-400 mt-2 text-center">∮ f(z) dz = 2πi · [ Res(z₁) + Res(z₂) ]</div>
+          </div>
+
+          <div class="md:col-span-7 space-y-3">
+            <div class="rounded-xl bg-slate-900/75 border border-slate-800 p-4">
+              <div class="text-sm font-bold text-sky-300 mb-1">Step 1 · 抓出圈內奇點</div>
+              <div class="text-sm text-slate-300">解分母為 0 的所有極點，<strong>只保留落在封閉路徑 C 內部的點</strong>（例如算實軸瑕積分時只取上半平面 Im(z) &gt; 0）。</div>
+            </div>
+            <div class="rounded-xl bg-slate-900/75 border border-slate-800 p-4">
+              <div class="text-sm font-bold text-amber-300 mb-1">Step 2 · 計算留數（Residue）</div>
+              <div class="text-sm text-slate-300">一階極點直接蓋住消掉：<span class="math-pill">Res(f, z₀) = lim (z - z₀) f(z)</span>；m 階極點則微分 (m-1) 次再除以 (m-1)!。</div>
+            </div>
+            <div class="rounded-xl bg-slate-900/75 border border-slate-800 p-4">
+              <div class="text-sm font-bold text-emerald-300 mb-1">Step 3 · 乘上 2πi 收尾</div>
+              <div class="text-sm text-slate-300">把所有圈內留數相加乘上 <span class="math-pill">2πi</span>，即可解出原本在實數軸上無從下手的定積分。</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 8: Bridge to Auto-Control Wiki -->
+      <section class="slide flex-col justify-between glass-card rounded-2xl p-7 md:p-10 min-h-[540px] shadow-2xl" data-title="跨科串聯：如何沿用並銜接自動控制 Wiki" data-wiki-ref="control-bridge.md">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <span class="text-xs font-bold uppercase tracking-wider text-amber-400">Part 6 · 跨科整合與既有 Wiki 沿用</span>
+          <button type="button" class="wiki-chip px-2.5 py-1 rounded-md text-xs text-sky-300 bg-sky-500/10 border border-sky-400/30" data-open-doc="wiki/control-bridge.md">
+            來源：wiki/control-bridge.md
+          </button>
+        </div>
+
+        <h2 class="text-2xl md:text-3xl font-bold text-white mb-2">工數 × 自動控制：同一個數學，兩種考法</h2>
+        <p class="text-slate-300 text-sm md:text-base mb-5">
+          把這份工數 Wiki 的 <span class="math-pill">raw/</span> 與 <span class="math-pill">wiki/</span> 放進既有的 <span class="math-pill">auto-control-wiki</span>，就能把「數學工具」與「控制系統物理意義」直接串成雙向知識圖譜：
+        </p>
+
+        <div class="overflow-x-auto rounded-xl border border-slate-800 bg-slate-900/70">
+          <table class="w-full text-left text-sm">
+            <thead class="bg-sky-500/15 text-sky-200 text-xs uppercase">
+              <tr>
+                <th class="px-4 py-3">工程數學單元</th>
+                <th class="px-4 py-3">自動控制對應概念</th>
+                <th class="px-4 py-3">一句話貫通</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800 text-slate-200">
+              <tr>
+                <td class="px-4 py-3 font-semibold text-white">二階 ODE 特徵根</td>
+                <td class="px-4 py-3 text-amber-300">阻尼比 ζ、自然頻率 ωn</td>
+                <td class="px-4 py-3 text-slate-300">特徵根決定系統會不會震盪或發散</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-white">拉普拉斯轉換</td>
+                <td class="px-4 py-3 text-amber-300">轉移函數 G(s) = Y(s)/U(s)</td>
+                <td class="px-4 py-3 text-slate-300">零初始條件下把微分方程寫成方塊圖</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-white">傅立葉頻域響應</td>
+                <td class="px-4 py-3 text-amber-300">波德圖（Bode Plot）</td>
+                <td class="px-4 py-3 text-slate-300">令 s = jω，看不同頻率訊號被放大或衰減</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-white">矩陣特徵值與 e^(At)</td>
+                <td class="px-4 py-3 text-amber-300">狀態空間穩定度與 Φ(t)</td>
+                <td class="px-4 py-3 text-slate-300">矩陣 A 的特徵值就是系統極點</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-semibold text-white">複變封閉路徑</td>
+                <td class="px-4 py-3 text-amber-300">奈奎斯特穩定準則</td>
+                <td class="px-4 py-3 text-slate-300">用包圍 (-1, 0) 的圈數判斷閉迴路穩定性</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- SLIDE 9: Study Roadmap -->
+      <section class="slide flex-col justify-between glass-card rounded-2xl p-7 md:p-10 min-h-[540px] shadow-2xl" data-title="學習路線：新手怎麼照順序吃下五大單元" data-wiki-ref="overview.md,index.md">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <span class="text-xs font-bold uppercase tracking-wider text-sky-400">Part 7 · 學習路線與備戰節奏</span>
+          <button type="button" class="wiki-chip px-2.5 py-1 rounded-md text-xs text-sky-300 bg-sky-500/10 border border-sky-400/30" data-open-doc="wiki/index.md">
+            來源：wiki/index.md
+          </button>
+        </div>
+
+        <h2 class="text-2xl md:text-3xl font-bold text-white mb-2">新手讀成大電機工數的建議順序</h2>
+        <p class="text-slate-300 text-sm md:text-base mb-6">
+          不要照課本厚薄硬啃，依照「先建模型 → 換工具加速 → 擴展到多維」的順序，投資報酬率最高：
+        </p>
+
+        <div class="grid md:grid-cols-4 gap-4 flex-1">
+          <div class="rounded-xl bg-slate-900/80 border border-sky-500/30 p-4 flex flex-col justify-between">
+            <div>
+              <span class="text-xs font-bold text-sky-400">STAGE 1</span>
+              <h3 class="text-base font-bold text-white mt-1">ODE + Laplace</h3>
+              <p class="text-xs text-slate-300 mt-2 leading-relaxed">先打通一二階常微分方程與拉普拉斯轉換，這兩章是所有電機考科的共同地基。</p>
+            </div>
+            <div class="mt-4 text-xs text-sky-300 font-medium">優先度：★★★★★</div>
+          </div>
+
+          <div class="rounded-xl bg-slate-900/80 border border-amber-500/30 p-4 flex flex-col justify-between">
+            <div>
+              <span class="text-xs font-bold text-amber-400">STAGE 2</span>
+              <h3 class="text-base font-bold text-white mt-1">線性代數</h3>
+              <p class="text-xs text-slate-300 mt-2 leading-relaxed">集中火力練特徵值、對角化、Jordan Form 與 SVD，成大電機與台聯大年年必出。</p>
+            </div>
+            <div class="mt-4 text-xs text-amber-300 font-medium">優先度：★★★★★</div>
+          </div>
+
+          <div class="rounded-xl bg-slate-900/80 border border-emerald-500/30 p-4 flex flex-col justify-between">
+            <div>
+              <span class="text-xs font-bold text-emerald-400">STAGE 3</span>
+              <h3 class="text-base font-bold text-white mt-1">傅立葉分析</h3>
+              <p class="text-xs text-slate-300 mt-2 leading-relaxed">熟記奇偶對稱展開與基本轉換對，搭配疊加原理一次打通訊號與系統觀念。</p>
+            </div>
+            <div class="mt-4 text-xs text-emerald-300 font-medium">優先度：★★★★☆</div>
+          </div>
+
+          <div class="rounded-xl bg-slate-900/80 border border-violet-500/30 p-4 flex flex-col justify-between">
+            <div>
+              <span class="text-xs font-bold text-violet-400">STAGE 4</span>
+              <h3 class="text-base font-bold text-white mt-1">複變留數定理</h3>
+              <p class="text-xs text-slate-300 mt-2 leading-relaxed">專練「找極點 → 算留數 → 算實軸瑕積分」三步套路，公式少但拿分極穩。</p>
+            </div>
+            <div class="mt-4 text-xs text-violet-300 font-medium">優先度：★★★★☆</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 10: Grounding & Workflow Summary -->
+      <section class="slide flex-col justify-between glass-card rounded-2xl p-7 md:p-10 min-h-[540px] shadow-2xl" data-title="總結：LLM Wiki 對應表與生成工作流" data-wiki-ref="index.md,control-bridge.md">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <span class="text-xs font-bold uppercase tracking-wider text-emerald-400">Part 8 · 知識庫溯源與 Graph 驗證</span>
+          <button type="button" class="wiki-chip px-2.5 py-1 rounded-md text-xs text-sky-300 bg-sky-500/10 border border-sky-400/30" data-open-doc="wiki/log.md">
+            檢視執行紀錄：wiki/log.md
+          </button>
+        </div>
+
+        <h2 class="text-2xl md:text-3xl font-bold text-white mb-2">這份簡報如何從 LLM Wiki 自動生成並驗證？</h2>
+        <p class="text-slate-300 text-sm mb-5">
+          本簡報共整合 <strong>6 篇原始權威來源</strong>（<span class="math-pill">raw/01–06</span>）與 <strong>7 篇交叉連結條目</strong>（<span class="math-pill">wiki/*.md</span>），在生成簡報前先經過自動腳本檢查，確保每一頁都有明確出處與白話導讀。
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-4 flex-1">
+          <div class="rounded-xl bg-slate-900/75 border border-slate-800 p-4">
+            <h3 class="text-sm font-bold text-sky-300 mb-2.5">點選直接檢視 LLM Wiki 檔案</h3>
+            <div class="flex flex-wrap gap-2">
+              <button type="button" class="wiki-chip px-3 py-1.5 rounded-lg text-xs bg-slate-800 border border-slate-700 text-slate-200" data-open-doc="wiki/index.md">wiki/index.md</button>
+              <button type="button" class="wiki-chip px-3 py-1.5 rounded-lg text-xs bg-slate-800 border border-slate-700 text-slate-200" data-open-doc="wiki/overview.md">wiki/overview.md</button>
+              <button type="button" class="wiki-chip px-3 py-1.5 rounded-lg text-xs bg-slate-800 border border-slate-700 text-slate-200" data-open-doc="wiki/ode.md">wiki/ode.md</button>
+              <button type="button" class="wiki-chip px-3 py-1.5 rounded-lg text-xs bg-slate-800 border border-slate-700 text-slate-200" data-open-doc="wiki/laplace.md">wiki/laplace.md</button>
+              <button type="button" class="wiki-chip px-3 py-1.5 rounded-lg text-xs bg-slate-800 border border-slate-700 text-slate-200" data-open-doc="wiki/fourier.md">wiki/fourier.md</button>
+              <button type="button" class="wiki-chip px-3 py-1.5 rounded-lg text-xs bg-slate-800 border border-slate-700 text-slate-200" data-open-doc="wiki/linear-algebra.md">wiki/linear-algebra.md</button>
+              <button type="button" class="wiki-chip px-3 py-1.5 rounded-lg text-xs bg-slate-800 border border-slate-700 text-slate-200" data-open-doc="wiki/complex-analysis.md">wiki/complex-analysis.md</button>
+              <button type="button" class="wiki-chip px-3 py-1.5 rounded-lg text-xs bg-slate-800 border border-slate-700 text-slate-200" data-open-doc="wiki/control-bridge.md">wiki/control-bridge.md</button>
+              <button type="button" class="wiki-chip px-3 py-1.5 rounded-lg text-xs bg-amber-500/15 border border-amber-400/40 text-amber-200" data-open-doc="wiki/log.md">wiki/log.md</button>
+              <button type="button" class="wiki-chip px-3 py-1.5 rounded-lg text-xs bg-emerald-500/15 border border-emerald-400/40 text-emerald-200" data-open-doc="AGENTS.md">AGENTS.md</button>
+            </div>
+          </div>
+
+          <div class="rounded-xl bg-slate-900/75 border border-slate-800 p-4 flex flex-col justify-between">
+            <div>
+              <h3 class="text-sm font-bold text-amber-300 mb-2">6 節點雙迴圈 Graph 流程</h3>
+              <ol class="text-xs text-slate-300 space-y-1.5 list-decimal list-inside">
+                <li><strong>先討論、後生成</strong>：鎖定成大電機工數五大單元與規範</li>
+                <li><strong>Source Ingest</strong>：寫入 6 篇權威來源至 <span class="math-pill">raw/</span></li>
+                <li><strong>Wiki Synthesis</strong>：整理 7 篇白話條目與 35 個交叉連結</li>
+                <li><strong>檢查迴圈 1（前置閘門）</strong>：腳本驗證來源與連結完整度</li>
+                <li><strong>Slide Generation</strong>：由 Wiki 產生 10 頁簡報與 2 個模擬器</li>
+                <li><strong>檢查迴圈 2（成品稽核）</strong>：驗證頁碼對應、互動與版面</li>
+              </ol>
+            </div>
+            <div class="mt-3 text-xs text-slate-400">作者：中正大學 機械四 廖紹強（412422092）</div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Bottom Navigation Bar -->
+  <footer class="sticky bottom-0 z-20 border-t border-slate-800/90 bg-slate-950/90 backdrop-blur-md">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+      <button id="btn-prev" type="button" class="px-4 py-2 rounded-xl text-sm font-semibold bg-slate-800 hover:bg-slate-700 disabled:opacity-40 text-slate-100 border border-slate-700 transition">
+        ← 上一頁
+      </button>
+      <div class="flex flex-col items-center">
+        <div id="slide-counter" class="text-sm font-bold text-white">1 / 10</div>
+        <div id="slide-caption" class="text-xs text-slate-400 hidden sm:block">封面：從零看懂成大電機工程數學</div>
+      </div>
+      <button id="btn-next" type="button" class="px-4 py-2 rounded-xl text-sm font-semibold bg-sky-500 hover:bg-sky-400 disabled:opacity-40 text-slate-950 transition">
+        下一頁 →
+      </button>
+    </div>
+  </footer>
+
+  <!-- Slide Overview Modal -->
+  <div id="overview-modal" class="fixed inset-0 z-40 hidden bg-slate-950/80 backdrop-blur-sm items-center justify-center p-4">
+    <div class="glass-card rounded-2xl max-w-2xl w-full p-6 max-h-[85vh] flex flex-col">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-bold text-white">簡報目錄總覽（10 頁）</h3>
+        <button id="btn-close-overview" type="button" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs">關閉</button>
+      </div>
+      <div id="overview-grid" class="grid sm:grid-cols-2 gap-2.5 overflow-y-auto pr-1"></div>
+    </div>
+  </div>
+
+  <!-- LLM Wiki Viewer Drawer -->
+  <div id="wiki-modal" class="fixed inset-0 z-50 hidden bg-slate-950/85 backdrop-blur-sm items-center justify-center p-3 md:p-6">
+    <div class="glass-card rounded-2xl max-w-5xl w-full h-[86vh] flex flex-col overflow-hidden border border-sky-500/30">
+      <div class="flex items-center justify-between px-5 py-3.5 border-b border-slate-800 bg-slate-900/90">
+        <div>
+          <div class="text-sm font-bold text-white">LLM Wiki 知識庫瀏覽器（ncku-ee-engmath-wiki）</div>
+          <div id="wiki-active-path" class="text-xs text-sky-400 font-mono">wiki/index.md</div>
+        </div>
+        <button id="btn-close-wiki" type="button" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium">關閉檢視器</button>
+      </div>
+      <div class="flex-1 flex flex-col md:flex-row overflow-hidden">
+        <aside id="wiki-sidebar" class="md:w-64 border-b md:border-b-0 md:border-r border-slate-800 bg-slate-950/60 p-3 overflow-y-auto shrink-0 space-y-1"></aside>
+        <article id="wiki-content" class="flex-1 p-5 md:p-6 overflow-y-auto wiki-md"></article>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const WIKI_DB = {"wiki/complex-analysis.md": "# 複變函數與留數定理：繞道複數平面解積分\n\n- **對應原始資料**：`raw/06_complex_residue_theorem.md`\n- **外部來源**：[MIT OCW 18.04 — Cauchy's Integral Formula](https://ocw.mit.edu/courses/18-04-complex-variables-with-applications-spring-2018/b1a90df19f643b974555bbbb93138a48_MIT18_04S18_topic4.pdf)、[Residue Theorem](https://ocw.mit.edu/courses/18-04-complex-variables-with-applications-spring-2018/3c58ce71ec6f7573804221d76158a0bd_MIT18_04S18_topic8.pdf)\n- **相關條目**：[[laplace]]、[[fourier]]、[[overview]]\n\n## 一句話白話理解\n實數軸上卡死的困難積分，把它放進複數平面畫一個封閉圈圈，只要檢查圈圈裡包了哪幾個「奇點（地雷）」，把每個奇點的留數加起來乘上 $2\\pi i$ 就是答案。\n\n## 生活／工程直覺\n把複數平面想像成一片草地，封閉路徑 $C$ 是一條圍欄。如果圍欄裡一片平坦（函數處處解析），繞一圈回來積分永遠是 0；唯一會讓積分不為 0 的，就是圍欄裡包到的「奇點」，而留數（Residue）就是每個奇點貢獻的權重。\n\n## 留數定理實戰三步驟\n1. **找出所有奇點並判斷階數**：解分母為 0 的點 $z_k$，確認哪些落在封閉路徑 $C$ **內部**（外部的不算！）。\n2. **計算圈內各奇點的留數**：\n   - 一階極點（Simple Pole）：$\\operatorname{Res}(f, z_0) = \\lim_{z \\to z_0} (z - z_0) f(z)$\n   - $m$ 階極點：$\\operatorname{Res}(f, z_0) = \\frac{1}{(m-1)!} \\lim_{z \\to z_0} \\frac{d^{m-1}}{dz^{m-1}}[(z - z_0)^m f(z)]$\n3. **套用留數定理**：$\\oint_C f(z)\\,dz = 2\\pi i \\sum \\operatorname{Res}(f, z_j)$。\n\n## 考場易錯提醒\n- 忘記檢查奇點是否真的在「上半平面」或指定路徑內部，把路徑外的極點也加進去是最大失分點。\n", "wiki/control-bridge.md": "# 跨科橋樑：如何沿用並整合到 `auto-control-wiki`\n\n- **對應原始資料**：`raw/01_ncku_ee_exam_scope.md`、`raw/03_laplace_and_convolution.md`、`raw/05_linear_algebra_eigen_svd.md`\n- **外部來源**：[成大圖書館電機系碩士班考古題 EC15](https://exam.lib.ncku.edu.tw/master_subject.php?department_code=EC15)、[MIT OCW 18.06SC](https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/pages/least-squares-determinants-and-eigenvalues/diagonalization-and-powers-of-a/)\n- **相關條目**：[[overview]]、[[laplace]]、[[linear-algebra]]、[[fourier]]\n\n## 一句話白話理解\n工程數學是「底層引擎」，自動控制與電路學是「開在上面的車」；把兩個 LLM Wiki 接起來，就能看到同一個數學觀念在不同考科的真面目。\n\n## 生活／工程直覺\n唸自動控制時背的「左半平面極點才會穩定」，其實就是工數裡 ODE 特徵根實部小於零、以及線性代數裡狀態矩陣 $A$ 的特徵值實部小於零——三件事講的是完全同一件事。\n\n## 工數 × 自動控制概念對照表\n| 工程數學 Wiki 條目 | 自動控制 (`auto-control-wiki`) 對應概念 | 考題串聯重點 |\n| :--- | :--- | :--- |\n| [[ode]] 二階齊性解特徵根 | 二階系統阻尼比 $\\zeta$ 與自然頻率 $\\omega_n$ | 過阻尼／臨界阻尼／欠阻尼步階響應 |\n| [[laplace]] 拉普拉斯轉換 | 轉移函數 $G(s) = Y(s)/U(s)$ | 初始條件為零時的輸入輸出關係 |\n| [[fourier]] 傅立葉頻域響應 | 波德圖（Bode Plot）與頻寬 | 令 $s = j\\omega$ 觀察增益與相位餘度 |\n| [[linear-algebra]] 特徵值與 $e^{At}$ | 狀態空間穩定度與狀態轉移矩陣 $\\Phi(t)$ | $\\det(sI - A) = 0$ 的根即系統極點 |\n| [[complex-analysis]] 封閉路徑與奇點 | 奈奎斯特準則（Nyquist Stability Criterion） | 輻角原理計算包圍 $(-1, 0)$ 的圈數 |\n\n## 如何實作沿用（兩步驟合併法）\n1. 將本專案的 `raw/01~06*.md` 與 `wiki/*.md` 直接複製進既有的 `auto-control-wiki` 對應資料夾。\n2. 在原專案的 `wiki/index.md` 補上「工程數學模組」連結並指向 `wiki/control-bridge.md`，即可在不破壞舊筆記的前提下完成雙科知識圖譜。\n", "wiki/fourier.md": "# 傅立葉分析：把訊號拆成頻率配方\n\n- **對應原始資料**：`raw/04_fourier_series_and_transform.md`\n- **外部來源**：[MIT OCW 18.03SC — Fourier Series: Basics](https://ocw.mit.edu/courses/18-03sc-differential-equations-fall-2011/pages/unit-iii-fourier-series-and-laplace-transform/fourier-series-basics/)、[ES.1803 Topic 21](https://ocw.mit.edu/courses/es-1803-differential-equations-spring-2024/mites_1803_s24_topic21.pdf)\n- **相關條目**：[[laplace]]、[[complex-analysis]]、[[overview]]\n\n## 一句話白話理解\n傅立葉分析就像幫聲音或電流做「成分標示」：把任何複雜的波形，拆解成不同頻率的正弦波各自佔多少比例。\n\n## 生活／工程直覺\n你聽一首歌時，喇叭輸出的是一條彎彎曲曲的總電壓波形；但音樂播放器的等化器（EQ）可以單獨把低音調強、高音濾掉——這背後就是把時域波形透過傅立葉分析轉到頻域，看清每個頻率的強度。\n\n## 核心公式與考場捷徑\n- **週期訊號 → 傅立葉級數**：\n  $$f(t) = \\frac{a_0}{2} + \\sum_{n=1}^{\\infty} \\left(a_n \\cos(n\\omega_0 t) + b_n \\sin(n\\omega_0 t)\\right)$$\n- **非週期訊號 → 傅立葉轉換**：週期 $T \\to \\infty$ 時，離散諧波變為連續頻譜 $F(\\omega)$。\n- **奇偶對稱省時術**：\n  - 偶函數（左右對稱）→ $b_n = 0$，只算 $a_n$。\n  - 奇函數（原點對稱）→ $a_0 = a_n = 0$，只算 $b_n$。\n\n## 考場易錯提醒\n- 直流項係數常寫作 $a_0/2$，套公式時要注意是否已除以 2。\n- 在不連續點（如方波跳變處），傅立葉級數會收斂到左右極限的平均值，且邊緣會出現吉布斯現象（Gibbs Phenomenon）。\n", "wiki/index.md": "# 成大電機工程數學 LLM Wiki 總索引\n\n> 本 Wiki 依據 `AGENTS.md` 規範建置，共 ingest **6 篇原始權威資料**，整理出 **7 篇結構化教學條目**，並與教學 HTML 簡報（`index.html`）一一對應。\n\n## 一、原始資料清單（`raw/`）\n| 編號 | 檔案 | 主題 | 來源 |\n| :--- | :--- | :--- | :--- |\n| R01 | `raw/01_ncku_ee_exam_scope.md` | 成大電機碩士班考科與工數範圍 | [成大圖書館考古題 EC15](https://exam.lib.ncku.edu.tw/master_subject.php?department_code=EC15)、[ColleGo!](https://collego.edu.tw/Highschool/MajorIntro?current_major_id=9&collegeFrom=2) |\n| R02 | `raw/02_ode_first_second_order.md` | 一階與二階常微分方程 ODE | [Paul's Notes DE](https://tutorial.math.lamar.edu/classes/de/de.aspx)、[MIT OCW ES.1803](https://ocw.mit.edu/courses/es-1803-differential-equations-spring-2024/pages/class-notes/) |\n| R03 | `raw/03_laplace_and_convolution.md` | 拉普拉斯轉換與摺積定理 | [Paul's Notes IVP](https://tutorial.math.lamar.edu/classes/de/ivpwithlaplace.aspx)、[Convolution](https://tutorial.math.lamar.edu/classes/de/convolutionintegrals.aspx) |\n| R04 | `raw/04_fourier_series_and_transform.md` | 傅立葉級數與頻域疊加 | [MIT OCW 18.03SC](https://ocw.mit.edu/courses/18-03sc-differential-equations-fall-2011/pages/unit-iii-fourier-series-and-laplace-transform/fourier-series-basics/)、[ES.1803 Topic 21](https://ocw.mit.edu/courses/es-1803-differential-equations-spring-2024/mites_1803_s24_topic21.pdf) |\n| R05 | `raw/05_linear_algebra_eigen_svd.md` | 特徵值、對角化與 SVD | [MIT OCW 18.06SC Diagonalization](https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/pages/least-squares-determinants-and-eigenvalues/diagonalization-and-powers-of-a/)、[SVD](https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/pages/positive-definite-matrices-and-applications/singular-value-decomposition/) |\n| R06 | `raw/06_complex_residue_theorem.md` | 柯西積分公式與留數定理 | [MIT OCW 18.04 Topic 4](https://ocw.mit.edu/courses/18-04-complex-variables-with-applications-spring-2018/b1a90df19f643b974555bbbb93138a48_MIT18_04S18_topic4.pdf)、[Topic 8](https://ocw.mit.edu/courses/18-04-complex-variables-with-applications-spring-2018/3c58ce71ec6f7573804221d76158a0bd_MIT18_04S18_topic8.pdf) |\n\n## 二、知識條目與簡報對應表（`wiki/` → `index.html`）\n| Wiki 條目 | 核心主題 | 對應簡報頁碼 |\n| :--- | :--- | :--- |\n| [[overview]] (`wiki/overview.md`) | 為什麼電機工程離不開工程數學？五大單元全域地圖 | Slide 1–2, Slide 9 |\n| [[ode]] (`wiki/ode.md`) | 常微分方程 ODE：描述動態變化率的語言 | Slide 3 |\n| [[laplace]] (`wiki/laplace.md`) | 拉普拉斯轉換與摺積：把微積分變四則運算 | Slide 4 |\n| [[fourier]] (`wiki/fourier.md`) | 傅立葉分析：拆解訊號的頻率配方 | Slide 5 |\n| [[linear-algebra]] (`wiki/linear-algebra.md`) | 線性代數：特徵值、對角化與 SVD | Slide 6 |\n| [[complex-analysis]] (`wiki/complex-analysis.md`) | 複變函數與留數定理：繞道複數平面解積分 | Slide 7 |\n| [[control-bridge]] (`wiki/control-bridge.md`) | 跨科橋樑：沿用並銜接 `auto-control-wiki` | Slide 8, Slide 10 |\n", "wiki/laplace.md": "# 拉普拉斯轉換與摺積：把微積分變四則運算\n\n- **對應原始資料**：`raw/03_laplace_and_convolution.md`\n- **外部來源**：[Paul's Online Notes — Solving IVPs](https://tutorial.math.lamar.edu/classes/de/ivpwithlaplace.aspx)、[Convolution Integrals](https://tutorial.math.lamar.edu/classes/de/convolutionintegrals.aspx)、[Laplace Table](https://tutorial.math.lamar.edu/classes/de/laplace_table.aspx)\n- **相關條目**：[[ode]]、[[fourier]]、[[control-bridge]]\n\n## 一句話白話理解\n拉普拉斯轉換就像「時域到 $s$ 域的翻譯機」：原本很難算的微分與積分，翻過去之後全變成乘以 $s$ 與除以 $s$ 的國中代數。\n\n## 生活／工程直覺\n直接解微分方程像用羅馬數字做乘法；先取 Laplace 轉換就像換成阿拉伯數字算完再換回來。更棒的是，初始條件 $y(0), y'(0)$ 在轉換第一步就自動包進去，而且碰到開關突然切換（步階函數）或瞬間脈衝（Delta 函數）也能輕鬆處理。\n\n## 標準三步流程與摺積武器\n1. **轉到 $s$ 域**：利用 $\\mathcal{L}\\{y'\\} = sY(s) - y(0)$ 與 $\\mathcal{L}\\{y''\\} = s^2Y(s) - sy(0) - y'(0)$。\n2. **代數整理**：移項求出 $Y(s)$，用部分分式展開拆成基本項。\n3. **逆轉換回時域**：查表取 $\\mathcal{L}^{-1}\\{Y(s)\\}$；若 $Y(s) = F(s)G(s)$ 不好拆，改用**摺積定理**：\n   $$\\mathcal{L}^{-1}\\{F(s)G(s)\\} = (f * g)(t) = \\int_0^t f(t - \\tau)g(\\tau)\\,d\\tau$$\n\n## 考場易錯提醒\n- 忘記減去初始條件項 $-sy(0) - y'(0)$。\n- 摺積積分上下限是 $0$ 到 $t$，且兩個函數可以互換以簡化積分計算。\n", "wiki/linear-algebra.md": "# 線性代數：特徵值、對角化與 SVD\n\n- **對應原始資料**：`raw/05_linear_algebra_eigen_svd.md`\n- **外部來源**：[MIT OCW 18.06SC — Diagonalization](https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/pages/least-squares-determinants-and-eigenvalues/diagonalization-and-powers-of-a/)、[SVD](https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/pages/positive-definite-matrices-and-applications/singular-value-decomposition/)、[MIT 18.06 PSet 9](https://web.mit.edu/18.06/www/Spring09/pset9-s09-soln.pdf)\n- **相關條目**：[[ode]]、[[control-bridge]]、[[overview]]\n\n## 一句話白話理解\n矩陣代表一種空間變換，而特徵向量就是「變換後方向完全不偏、只會拉長或縮短」的關鍵主軸。\n\n## 生活／工程直覺\n如果一個系統有三個互相牽連的變數（例如多關節機械臂或複雜電路），直接算會綁手綁腳。透過「對角化」換到特徵向量的座標系，原本糾纏在一起的方程就會拆成三個彼此獨立的一維問題，算完再換回來就好。\n\n## 三大必考核心\n1. **特徵值分解與對角化**：由 $\\det(A - \\lambda I) = 0$ 求特徵值；若有 $n$ 個獨立特徵向量，則 $A = S\\Lambda S^{-1}$，讓 $A^k = S\\Lambda^k S^{-1}$ 與 $e^{At} = S e^{\\Lambda t} S^{-1}$ 瞬間可算。\n2. **解耦微分方程組**：將高階 ODE 寫成狀態空間 $\\dot{\\mathbf{u}} = A\\mathbf{u}$，解為 $\\mathbf{u}(t) = e^{At}\\mathbf{u}(0)$。\n3. **奇異值分解（SVD）**：任意 $m \\times n$ 矩陣都可寫作 $A = U\\Sigma V^T$（不限方陣），其中奇異值 $\\sigma_i = \\sqrt{\\lambda_i(A^TA)}$，廣泛用於最小平方法與資料降維。\n\n## 考場易錯提醒\n- 重複特徵值若幾何重數小於代數重數，矩陣**不可對角化**，此時需改用 Jordan Form。\n- 實對稱矩陣（$A = A^T$）保證特徵值皆為實數，且不同特徵值的特徵向量必正交。\n", "wiki/log.md": "# LLM Wiki 執行與檢查紀錄（Execution Log）\n\n## 2026-11-23 — 建立流程（先討論、後生成）\n- **[Node 1 — Topic & Schema]**：與使用者討論後定案主題為「成大電機碩士考試（工程數學）」，鎖定五大核心單元並規劃與既有 `auto-control-wiki` 的跨科橋樑；建立 `AGENTS.md` 與 `CLAUDE.md`。\n- **[Node 2 — Source Ingest]**：完成 6 篇權威來源擷取並存入 `raw/01` 至 `raw/06`（超過作業要求之 5 篇下限），所有來源皆附可驗證之外部連結。\n- **[Node 3 — Wiki Synthesis]**：依據 `raw/` 生成 7 篇概念條目（`overview`, `ode`, `laplace`, `fourier`, `linear-algebra`, `complex-analysis`, `control-bridge`）與 `wiki/index.md`，全面加入「一句話白話理解」與「生活／工程直覺」欄位。\n- **[Node 4 — Wiki Integrity Gate]**：執行 `scripts/verify_wiki_and_slides.py` 進行結構與引用檢查（確認 raw >= 5、所有 `[[wikilink]]` 皆存在目標檔、每篇條目皆具外部來源 URL 與白話導讀欄位）。\n- **[Node 5 — Slide Generation]**：讀取通過檢查的 `wiki/*.md` 生成教學型 HTML 簡報（`index.html`），包含 10 頁教學投影片、2 個互動式數學視覺化模擬器（s 域阻尼步階響應、傅立葉方波諧波合成）與內建 Wiki 檢視抽屜。\n- **[Node 6 — Slide & Grounding Audit]**：透過自動檢查腳本驗證每一頁簡報皆對應到真實存在的 `wiki/*.md` 條目，並進行 HTML 語法、互動事件與無頭瀏覽器視覺排版檢查。\n", "wiki/ode.md": "# 常微分方程 ODE：描述動態變化的語言\n\n- **對應原始資料**：`raw/02_ode_first_second_order.md`\n- **外部來源**：[Paul's Online Notes — Differential Equations](https://tutorial.math.lamar.edu/classes/de/de.aspx)、[MIT OCW ES.1803](https://ocw.mit.edu/courses/es-1803-differential-equations-spring-2024/pages/class-notes/)\n- **相關條目**：[[overview]]、[[laplace]]、[[linear-algebra]]\n\n## 一句話白話理解\n微分方程就是「用現在的狀態，去描述下一秒變化得有多快」，解出它就能預測系統未來每一秒的走勢。\n\n## 生活／工程直覺\n電容充電時，電壓越高、充電電流越小（一階 ODE）；車子壓過減速丘時，彈簧想彈回去、避震器想讓它停下來（二階 ODE）。這兩件事寫成數學，就是電機考場最常出現的一階與二階常微分方程。\n\n## 新手必懂的三步解題框架\n1. **看階數與線性度**：一階先判斷是否可分離變數、是否可用積分因子或正合方程。\n2. **求齊性解 $y_h$（系統天性）**：解特徵方程式 $ar^2 + br + c = 0$。\n   - 兩相異實根 → 指數平滑衰減（過阻尼）\n   - 重根 → 多乘一個 $t$ 維持獨立（臨界阻尼）\n   - 共軛複根 → 衰減振盪波形（欠阻尼）\n3. **求特解 $y_p$（外力強迫）並相加**：總響應 $y(t) = y_h(t) + y_p(t)$，最後代入初始條件定出常數。\n\n## 考場易錯提醒\n- 重根時忘記補乘 $t$（可用 Wronskian 檢查線性獨立）。\n- 待定係數法的猜測項若與齊性解 $y_h$ 重複，必須乘上 $t$ 修正。\n", "wiki/overview.md": "# 成大電機工程數學全域地圖（Overview）\n\n- **對應原始資料**：`raw/01_ncku_ee_exam_scope.md`\n- **外部來源**：[成大圖書館電機系碩士班考古題 EC15](https://exam.lib.ncku.edu.tw/master_subject.php?department_code=EC15)、[ColleGo! 電機工程學類](https://collego.edu.tw/Highschool/MajorIntro?current_major_id=9&collegeFrom=2)\n- **相關條目**：[[ode]]、[[laplace]]、[[fourier]]、[[linear-algebra]]、[[complex-analysis]]、[[control-bridge]]\n\n## 一句話白話理解\n工程數學不是在考背公式，而是一套「把真實電路、訊號與控制系統翻譯成數學，再挑最省力工具解出來」的工具箱。\n\n## 生活／工程直覺\n想像你要設計一架無人機或一組濾波電路：物理定律寫出來一定是一堆微分方程（變化率）。工程數學的五大單元就像五把不同的扳手——有些問題直接算最慢，但換個視角（轉到頻率域、轉到矩陣特徵空間、或繞道複數平面）就會瞬間變簡單。\n\n## 成大電機碩士班五大核心單元\n1. **常微分方程（[[ode]]）**：建立系統的「時域動態模型」。\n2. **拉普拉斯轉換（[[laplace]]）**：處理帶初始條件的暫態問題，直接銜接控制系統與電路學。\n3. **傅立葉分析（[[fourier]]）**：把複雜訊號拆成不同頻率的正弦波，看懂濾波與通訊。\n4. **線性代數（[[linear-algebra]]）**：處理多變數耦合系統（狀態空間、特徵值、SVD）。\n5. **複變函數（[[complex-analysis]]）**：用留數定理秒殺實數軸上的困難積分與逆轉換。\n", "raw/01_ncku_ee_exam_scope.md": "# Raw 01：成大電機碩士班考古題架構與電機核心工程數學範圍\n\n- **來源 1**：[國立成功大學圖書館碩士班考古題（電機工程學系 EC15）](https://exam.lib.ncku.edu.tw/master_subject.php?department_code=EC15)\n- **來源 2**：[ColleGo! 電機工程學類核心課程介紹](https://collego.edu.tw/Highschool/MajorIntro?current_major_id=9&collegeFrom=2)\n- **Ingest 日期**：2026-11-23\n\n## 原始重點摘要\n1. 根據國立成功大學圖書館碩士班考古題系統（電機工程學系代碼 EC15），自 75 學年度至 115 學年度歷屆入學考試中，「工程數學」持續並列為電機系碩士班的核心考科，與控制系統、電路學、線性代數、電磁學、電子學、電力工程等科目共同構成電機專業評量體系。\n2. 根據 ColleGo! 電機工程學類課程說明，電機領域涵蓋電子、電力、資訊、通訊、控制、光電、晶片設計等方向；其必修核心「工程數學」主要包含五大工具：\n   - **微分方程（Differential Equations）**\n   - **拉普拉斯變換（Laplace Transform）**\n   - **傅立葉變換（Fourier Transform / Series）**\n   - **線性代數（Linear Algebra）**\n   - **複變函數（Complex Variables）**（部分組別另含機率學）\n3. 工程數學在電機系並非獨立純數學，而是電路學（暫態與 s 域分析）、訊號與系統（頻譜分析）、控制系統（轉移函數與穩定度）及通訊系統的共同語言。\n", "raw/02_ode_first_second_order.md": "# Raw 02：一階與二階常微分方程（ODE）解題架構\n\n- **來源 1**：[Paul's Online Notes — Differential Equations](https://tutorial.math.lamar.edu/classes/de/de.aspx)\n- **來源 2**：[MIT OCW 18.03 — Differential Equations Class Notes](https://ocw.mit.edu/courses/es-1803-differential-equations-spring-2024/pages/class-notes/)\n- **Ingest 日期**：2026-11-23\n\n## 原始重點摘要\n1. **一階常微分方程（First-Order ODE）**：常見標準解法包括分離變數法（Separable）、一階線性積分因子法（Linear / Integrating Factor）、正合微分方程（Exact）與白努力方程（Bernoulli）。在工程中常用於建立一階動態模型（如 RC 電路充放電、阻力落體運動、混合槽模型）。\n2. **二階線性常係數 ODE**：形式為 $a y'' + b y' + c y = g(t)$。\n   - **齊性解（Homogeneous Solution, $y_h$）**：由特徵方程式 $a r^2 + b r + c = 0$ 的根決定，分為三種情況：相異實根（過阻尼）、重根（臨界阻尼，需乘上 $t$ 維持線性獨立）、共軛複根（欠阻尼，產生指數衰減乘上正弦/餘弦振盪）。\n   - **特解（Particular Solution, $y_p$）**：對應外加輸入 $g(t)$ 的強迫響應，常用待定係數法（Undetermined Coefficients）或參數變換法（Variation of Parameters）。\n3. **線性獨立與 Wronskian**：可用 Wronskian 行列式檢驗兩個齊性解是否線性獨立，構成完整通解 $y(t) = y_h(t) + y_p(t)$。\n", "raw/03_laplace_and_convolution.md": "# Raw 03：拉普拉斯轉換（Laplace Transform）與摺積定理（Convolution）\n\n- **來源 1**：[Paul's Online Notes — Solving IVPs with Laplace Transforms](https://tutorial.math.lamar.edu/classes/de/ivpwithlaplace.aspx)\n- **來源 2**：[Paul's Online Notes — Convolution Integrals](https://tutorial.math.lamar.edu/classes/de/convolutionintegrals.aspx)\n- **來源 3**：[Paul's Online Notes — Table of Laplace Transforms](https://tutorial.math.lamar.edu/classes/de/laplace_table.aspx)\n- **Ingest 日期**：2026-11-23\n\n## 原始重點摘要\n1. **核心價值**：拉普拉斯轉換 $\\mathcal{L}\\{f(t)\\} = F(s) = \\int_0^{\\infty} e^{-st} f(t)\\,dt$ 能把時域中的微分方程初值問題（IVP）直接轉換為 $s$ 域中的「代數方程」，且初始條件 $y(0), y'(0)$ 會自動帶入計算，無須像傳統 ODE 先求通解再解聯立常數。\n2. **微分的拉普拉斯性質**：\n   - $\\mathcal{L}\\{y'(t)\\} = sY(s) - y(0)$\n   - $\\mathcal{L}\\{y''(t)\\} = s^2Y(s) - s y(0) - y'(0)$\n3. **三步解題流程**：(1) 兩邊取 Laplace 轉換 → (2) 用代數移項與部分分式展開解出 $Y(s)$ → (3) 查表取逆轉換 $\\mathcal{L}^{-1}\\{Y(s)\\}$ 回到時域 $y(t)$。\n4. **摺積定理（Convolution Integral）**：定義 $(f * g)(t) = \\int_0^t f(t - \\tau) g(\\tau)\\,d\\tau$，其拉普拉斯轉換滿足 $\\mathcal{L}\\{f * g\\} = F(s)G(s)$。當兩個 $s$ 域函數相乘、難以用部分分式拆解時，可直接透過摺積積分求逆轉換，也是電機系統「輸入與脈衝響應摺積得輸出」的數學基礎。\n", "raw/04_fourier_series_and_transform.md": "# Raw 04：傅立葉級數與頻域疊加分析（Fourier Series & Transform）\n\n- **來源 1**：[MIT OCW 18.03SC — Fourier Series: Basics](https://ocw.mit.edu/courses/18-03sc-differential-equations-fall-2011/pages/unit-iii-fourier-series-and-laplace-transform/fourier-series-basics/)\n- **來源 2**：[MIT OCW ES.1803 — Topic 21: Fourier Series Introduction](https://ocw.mit.edu/courses/es-1803-differential-equations-spring-2024/mites_1803_s24_topic21.pdf)\n- **Ingest 日期**：2026-11-23\n\n## 原始重點摘要\n1. **傅立葉級數核心思想**：任何滿足基本條件的週期函數 $f(t)$，都可以表示成一系列不同頻率正弦波（$\\sin$）與餘弦波（$\\cos$）的線性疊加：\n   $$f(t) = \\frac{a_0}{2} + \\sum_{n=1}^{\\infty} \\left(a_n \\cos(n\\omega_0 t) + b_n \\sin(n\\omega_0 t)\\right)$$\n2. **為何電機工程需要傅立葉分析**：當線性定常系統 $P(D)x = f(t)$ 的輸入不是單純的正弦波，而是方波、三角波等週期訊號時，可先將輸入展開為傅立葉級數，利用「疊加原理（Superposition Principle）」分別計算每個頻率成分的響應，再加總還原。\n3. **對稱性簡化技巧**：偶函數只需算 $a_n$（餘弦項），奇函數只需算 $b_n$（正弦項），能大幅節省考場計算時間。\n4. **從級數到轉換**：當週期 $T \\to \\infty$（非週期訊號）時，離散頻譜變成連續頻譜，即為傅立葉轉換（Fourier Transform），用來分析訊號在各頻率上的能量分布。\n", "raw/05_linear_algebra_eigen_svd.md": "# Raw 05：線性代數核心 — 特徵值、對角化與奇異值分解（SVD）\n\n- **來源 1**：[MIT OCW 18.06SC — Diagonalization and Powers of A](https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/pages/least-squares-determinants-and-eigenvalues/diagonalization-and-powers-of-a/)\n- **來源 2**：[MIT OCW 18.06SC — Singular Value Decomposition (SVD)](https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/pages/positive-definite-matrices-and-applications/singular-value-decomposition/)\n- **來源 3**：[MIT 18.06 Problem Set 9 — Matrix Exponential & ODE Systems](https://web.mit.edu/18.06/www/Spring09/pset9-s09-soln.pdf)\n- **Ingest 日期**：2026-11-23\n\n## 原始重點摘要\n1. **特徵值與特徵向量（Eigenvalues & Eigenvectors）**：滿足 $A\\mathbf{x} = \\lambda\\mathbf{x}$ 的非零向量 $\\mathbf{x}$，代表矩陣變換下「方向不變、只做伸縮」的主軸方向；由特徵多項式 $\\det(A - \\lambda I) = 0$ 求得特徵值 $\\lambda$。\n2. **矩陣對角化（Diagonalization）**：若 $n \\times n$ 矩陣 $A$ 擁有 $n$ 個線性獨立的特徵向量，即可分解為 $A = S\\Lambda S^{-1}$（$\\Lambda$ 為特徵值組成的對角矩陣）。對角化能大幅簡化矩陣高次方 $A^k = S\\Lambda^k S^{-1}$ 與矩陣指數 $e^{At} = S e^{\\Lambda t} S^{-1}$ 的計算。\n3. **與微分方程系統的連結**：高階 ODE 可改寫為一階狀態方程組 $\\dot{\\mathbf{u}} = A\\mathbf{u}$，其解即為 $\\mathbf{u}(t) = e^{At}\\mathbf{u}(0)$；特徵值實部小於零代表系統隨時間收斂穩定。\n4. **奇異值分解（SVD）**：對任意 $m \\times n$ 矩形矩陣 $A$，皆可分解為 $A = U\\Sigma V^T$，其中 $U, V$ 為正交矩陣（分別來自 $AA^T$ 與 $A^TA$ 的單位特徵向量），$\\Sigma$ 為非負奇異值對角矩陣。SVD 不受限於方陣或可對角化條件，是資料降維、最小平方法與影像壓縮的基石。\n", "raw/06_complex_residue_theorem.md": "# Raw 06：複變函數 — 柯西積分公式與留數定理（Residue Theorem）\n\n- **來源 1**：[MIT OCW 18.04 — Topic 4: Cauchy's Integral Formula](https://ocw.mit.edu/courses/18-04-complex-variables-with-applications-spring-2018/b1a90df19f643b974555bbbb93138a48_MIT18_04S18_topic4.pdf)\n- **來源 2**：[MIT OCW 18.04 — Topic 8: Residue Theorem](https://ocw.mit.edu/courses/18-04-complex-variables-with-applications-spring-2018/3c58ce71ec6f7573804221d76158a0bd_MIT18_04S18_topic8.pdf)\n- **Ingest 日期**：2026-11-23\n\n## 原始重點摘要\n1. **柯西積分公式（Cauchy's Integral Formula）**：若 $f(z)$ 在簡單封閉曲線 $C$ 上及其內部皆解析（analytic），則對 $C$ 內部任一點 $z_0$，其函數值完全由邊界積分決定：\n   $$f(z_0) = \\frac{1}{2\\pi i} \\oint_C \\frac{f(z)}{z - z_0}\\,dz$$\n   推廣至高階導數亦成立，把複數封閉路徑積分簡化為代值與微分。\n2. **羅朗級數與留數（Residue）**：在孤立奇點 $z_0$ 附近展開為羅朗級數（Laurent Series）時，只有 $(z - z_0)^{-1}$ 項的係數 $b_1 = \\operatorname{Res}(f, z_0)$ 對封閉積分有貢獻，其餘次方項積分皆為 0。\n3. **留數定理（Cauchy's Residue Theorem）**：若 $f(z)$ 在簡單封閉路徑 $C$ 內僅有有限個孤立奇點 $z_1, \\dots, z_k$，則：\n   $$\\oint_C f(z)\\,dz = 2\\pi i \\sum_{j=1}^{k} \\operatorname{Res}(f, z_j)$$\n4. **考場核心應用**：透過在複數平面選取封閉半圓路徑（上半平面圍住奇點），能把實數軸上極難直接積分的瑕積分 $\\int_{-\\infty}^{\\infty} f(x)\\,dx$ 轉化為找極點、算留數的標準步驟。\n", "AGENTS.md": "# AGENTS.md — 成大電機碩士考試「工程數學」LLM Wiki 規範\n\n## 1. 知識庫定位\n本知識庫（`ncku-ee-engmath-wiki`）以「國立成功大學電機工程學系碩士班」工程數學考科為核心，將原始教材整理為新手也能理解的結構化概念條目，作為教學型 HTML 簡報（`index.html`）的唯一事實來源（Single Source of Truth）。\n\n## 2. 目錄結構\n- `raw/`：原始資料（不可隨意竄改，至少 5 篇，本庫收錄 6 篇）。\n- `wiki/`：由 AI 整理並交叉連結的知識條目，包含 `index.md`（總索引）與 `log.md`（執行紀錄）。\n- `scripts/`：自動化檢查腳本，在生成簡報前強制驗證 Wiki 完整性。\n- `index.html`：教學型 HTML 簡報（內建 Wiki 知識庫對照抽屜）。\n\n## 3. 核心規則（Loop / Graph 約束）\n1. **先討論、後生成**：先確定五大單元架構與教學對象（非工數本科也能看懂），再進行 ingest。\n2. **禁止無來源斷言**：每一篇 `wiki/*.md` 必須在檔頭標註對應的 `raw/*.md` 與外部權威來源 URL。\n3. **強制包含新手白話欄位**：每篇概念條目都必須包含「一句話白話理解」與「生活／工程直覺」，避免簡報生成器只產出硬公式。\n4. **跨科橋樑（沿用 `auto-control-wiki`）**：若使用者已有 `auto-control-wiki`，可透過 `wiki/control-bridge.md` 直接將拉普拉斯轉換、特徵值與自動控制中的轉移函數、極點穩定度建立雙向連結。\n5. **驗證閘門優先**：每次修改 `wiki/` 後，必須先執行 `python3 scripts/verify_wiki_and_slides.py` 通過檢查，才可進入簡報生成節點。\n"};
+
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    let currentIndex = 0;
+
+    const btnPrev = document.getElementById('btn-prev');
+    const btnNext = document.getElementById('btn-next');
+    const counterEl = document.getElementById('slide-counter');
+    const captionEl = document.getElementById('slide-caption');
+    const progressEl = document.getElementById('progress-bar');
+
+    const overviewModal = document.getElementById('overview-modal');
+    const overviewGrid = document.getElementById('overview-grid');
+    const wikiModal = document.getElementById('wiki-modal');
+    const wikiSidebar = document.getElementById('wiki-sidebar');
+    const wikiContent = document.getElementById('wiki-content');
+    const wikiActivePath = document.getElementById('wiki-active-path');
+
+    function showSlide(idx) {
+      currentIndex = Math.max(0, Math.min(slides.length - 1, idx));
+      slides.forEach((s, i) => s.classList.toggle('active', i === currentIndex));
+      counterEl.textContent = `${currentIndex + 1} / ${slides.length}`;
+      captionEl.textContent = slides[currentIndex].dataset.title || '';
+      progressEl.style.width = `${((currentIndex + 1) / slides.length) * 100}%`;
+      btnPrev.disabled = currentIndex === 0;
+      btnNext.disabled = currentIndex === slides.length - 1;
+      if (currentIndex === 3) drawLaplace();
+      if (currentIndex === 4) drawFourier();
+    }
+
+    btnPrev.addEventListener('click', () => showSlide(currentIndex - 1));
+    btnNext.addEventListener('click', () => showSlide(currentIndex + 1));
+
+    document.addEventListener('keydown', (e) => {
+      if (!wikiModal.classList.contains('hidden') || !overviewModal.classList.contains('hidden')) {
+        if (e.key === 'Escape') {
+          wikiModal.classList.add('hidden');
+          overviewModal.classList.add('hidden');
+        }
+        return;
+      }
+      if (e.key === 'ArrowRight' || e.key === 'PageDown') showSlide(currentIndex + 1);
+      if (e.key === 'ArrowLeft' || e.key === 'PageUp') showSlide(currentIndex - 1);
+    });
+
+    // Overview modal
+    function renderOverview() {
+      overviewGrid.innerHTML = '';
+      slides.forEach((s, i) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `text-left p-3 rounded-xl border transition ${i === currentIndex ? 'bg-sky-500/20 border-sky-400 text-white' : 'bg-slate-900/70 border-slate-800 text-slate-300 hover:bg-slate-800'}`;
+        btn.innerHTML = `<div class="text-xs text-sky-400 font-bold">Slide ${i + 1}</div><div class="text-sm font-medium mt-0.5">${s.dataset.title}</div>`;
+        btn.addEventListener('click', () => {
+          showSlide(i);
+          overviewModal.classList.add('hidden');
+        });
+        overviewGrid.appendChild(btn);
+      });
+    }
+
+    document.getElementById('btn-overview').addEventListener('click', () => {
+      renderOverview();
+      overviewModal.classList.remove('hidden');
+      overviewModal.classList.add('flex');
+    });
+    document.getElementById('btn-close-overview').addEventListener('click', () => {
+      overviewModal.classList.add('hidden');
+      overviewModal.classList.remove('flex');
+    });
+
+    // Simple Markdown to HTML renderer for Wiki Drawer
+    function mdToHtml(md) {
+      let html = md
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      // Tables
+      html = html.replace(/((?:^\|.+\|\n)+)/gm, (block) => {
+        const rows = block.trim().split('\n').filter(r => !/^\|[\s:\-|]+\|$/.test(r));
+        if (!rows.length) return block;
+        let out = '<table><thead><tr>';
+        rows[0].split('|').slice(1, -1).forEach(c => { out += `<th>${c.trim()}</th>`; });
+        out += '</tr></thead><tbody>';
+        rows.slice(1).forEach(r => {
+          out += '<tr>';
+          r.split('|').slice(1, -1).forEach(c => { out += `<td>${c.trim()}</td>`; });
+          out += '</tr>';
+        });
+        out += '</tbody></table>';
+        return out;
+      });
+      html = html
+        .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+        .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+        .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+        .replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>')
+        .replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
+        .replace(/\[\[([a-zA-Z0-9_-]+)\]\]/g, '<button type="button" class="inline-wikilink text-amber-300 underline font-medium" data-slug="$1">[[$1]]</button>')
+        .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+        .replace(/`([^`]+)`/g, '<code>$1</code>')
+        .replace(/^- (.+)$/gm, '<li>$1</li>')
+        .replace(/^\d+\. (.+)$/gm, '<li>$1</li>');
+      html = html.replace(/(<li>.*<\/li>\n?)+/g, m => `<ul>${m}</ul>`);
+      html = html.replace(/\n\n+/g, '</p><p>');
+      return `<p>${html}</p>`;
+    }
+
+    function openWikiDoc(docKey) {
+      const key = WIKI_DB[docKey] ? docKey : 'wiki/index.md';
+      wikiActivePath.textContent = key;
+      wikiContent.innerHTML = mdToHtml(WIKI_DB[key]);
+      wikiContent.querySelectorAll('.inline-wikilink').forEach(btn => {
+        btn.addEventListener('click', () => openWikiDoc(`wiki/${btn.dataset.slug}.md`));
+      });
+      renderWikiSidebar(key);
+      wikiModal.classList.remove('hidden');
+      wikiModal.classList.add('flex');
+    }
+
+    function renderWikiSidebar(activeKey) {
+      const keys = Object.keys(WIKI_DB);
+      wikiSidebar.innerHTML = '';
+      keys.forEach(k => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = `w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-mono transition truncate ${k === activeKey ? 'bg-sky-500/25 text-sky-200 border border-sky-400/40' : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'}`;
+        b.textContent = k;
+        b.addEventListener('click', () => openWikiDoc(k));
+        wikiSidebar.appendChild(b);
+      });
+    }
+
+    document.getElementById('btn-open-wiki').addEventListener('click', () => openWikiDoc('wiki/index.md'));
+    document.getElementById('btn-close-wiki').addEventListener('click', () => {
+      wikiModal.classList.add('hidden');
+      wikiModal.classList.remove('flex');
+    });
+    document.querySelectorAll('[data-open-doc]').forEach(el => {
+      el.addEventListener('click', () => openWikiDoc(el.dataset.openDoc));
+    });
+
+    // Interactive 1: Laplace 2nd-order step response
+    const zetaSlider = document.getElementById('zeta-slider');
+    const zetaVal = document.getElementById('zeta-val');
+    const zetaStatus = document.getElementById('zeta-status');
+    const laplaceCanvas = document.getElementById('laplace-canvas');
+
+    function drawLaplace() {
+      if (!laplaceCanvas) return;
+      const rect = laplaceCanvas.parentElement.getBoundingClientRect();
+      const w = Math.max(300, Math.floor(rect.width));
+      const h = Math.max(210, Math.floor(rect.height));
+      laplaceCanvas.width = w;
+      laplaceCanvas.height = h;
+      const ctx = laplaceCanvas.getContext('2d');
+      ctx.clearRect(0, 0, w, h);
+
+      const z = parseFloat(zetaSlider.value);
+      zetaVal.textContent = z.toFixed(2);
+      if (z < 0.98) {
+        zetaStatus.textContent = '欠阻尼（共軛複極點）：反應快但會來回震盪';
+      } else if (z <= 1.05) {
+        zetaStatus.textContent = '臨界阻尼（重根極點）：最快歸位且完全不震盪';
+      } else {
+        zetaStatus.textContent = '過阻尼（兩相異實極點）：平滑無震盪但收斂較慢';
+      }
+
+      const padL = 36, padR = 16, padT = 18, padB = 26;
+      const pw = w - padL - padR;
+      const ph = h - padT - padB;
+      const tMax = 12;
+      const yMax = 1.65;
+
+      // Grid & target line y=1
+      ctx.strokeStyle = 'rgba(148,163,184,0.16)';
+      ctx.lineWidth = 1;
+      for (let g = 0; g <= 3; g++) {
+        const yy = padT + ph * (1 - (g * 0.5) / yMax);
+        ctx.beginPath(); ctx.moveTo(padL, yy); ctx.lineTo(w - padR, yy); ctx.stroke();
+      }
+      const y1 = padT + ph * (1 - 1.0 / yMax);
+      ctx.save();
+      ctx.setLineDash([5, 5]);
+      ctx.strokeStyle = 'rgba(245,158,11,0.7)';
+      ctx.beginPath(); ctx.moveTo(padL, y1); ctx.lineTo(w - padR, y1); ctx.stroke();
+      ctx.restore();
+
+      // Curve
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 2.6;
+      ctx.beginPath();
+      const wn = 1.4;
+      for (let i = 0; i <= 240; i++) {
+        const t = (i / 240) * tMax;
+        let y = 0;
+        if (z < 0.999) {
+          const wd = wn * Math.sqrt(1 - z * z);
+          const phi = Math.atan2(Math.sqrt(1 - z * z), z);
+          y = 1 - (Math.exp(-z * wn * t) / Math.sqrt(1 - z * z)) * Math.sin(wd * t + phi);
+        } else if (z <= 1.001) {
+          y = 1 - Math.exp(-wn * t) * (1 + wn * t);
+        } else {
+          const s = Math.sqrt(z * z - 1);
+          const r1 = wn * (z - s);
+          const r2 = wn * (z + s);
+          y = 1 - (r2 * Math.exp(-r1 * t) - r1 * Math.exp(-r2 * t)) / (r2 - r1);
+        }
+        const px = padL + (t / tMax) * pw;
+        const py = padT + ph * (1 - Math.max(0, Math.min(yMax, y)) / yMax);
+        if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '11px Inter, sans-serif';
+      ctx.fillText('y(t)', 6, padT + 6);
+      ctx.fillText('1.0', 10, y1 + 4);
+      ctx.fillText('時間 t', w - 46, h - 8);
+    }
+
+    zetaSlider.addEventListener('input', drawLaplace);
+
+    // Interactive 2: Fourier square wave synthesizer
+    const harmSlider = document.getElementById('harmonic-slider');
+    const harmVal = document.getElementById('harmonic-val');
+    const fourierCanvas = document.getElementById('fourier-canvas');
+
+    function drawFourier() {
+      if (!fourierCanvas) return;
+      const rect = fourierCanvas.parentElement.getBoundingClientRect();
+      const w = Math.max(300, Math.floor(rect.width));
+      const h = Math.max(210, Math.floor(rect.height));
+      fourierCanvas.width = w;
+      fourierCanvas.height = h;
+      const ctx = fourierCanvas.getContext('2d');
+      ctx.clearRect(0, 0, w, h);
+
+      const N = parseInt(harmSlider.value, 10);
+      harmVal.textContent = `N = ${N} 個奇次諧波`;
+
+      const padL = 24, padR = 16, padT = 18, padB = 22;
+      const pw = w - padL - padR;
+      const ph = h - padT - padB;
+      const midY = padT + ph / 2;
+
+      // Center axis
+      ctx.strokeStyle = 'rgba(148,163,184,0.22)';
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(padL, midY); ctx.lineTo(w - padR, midY); ctx.stroke();
+
+      // Ideal square wave (dashed)
+      ctx.save();
+      ctx.setLineDash([4, 4]);
+      ctx.strokeStyle = 'rgba(148,163,184,0.5)';
+      ctx.lineWidth = 1.4;
+      ctx.beginPath();
+      for (let i = 0; i <= 260; i++) {
+        const t = -Math.PI + (i / 260) * 4 * Math.PI;
+        const sq = Math.sin(t) >= 0 ? 1 : -1;
+        const px = padL + (i / 260) * pw;
+        const py = midY - sq * (ph * 0.36);
+        if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+      ctx.restore();
+
+      // Fourier partial sum
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 2.6;
+      ctx.beginPath();
+      for (let i = 0; i <= 320; i++) {
+        const t = -Math.PI + (i / 320) * 4 * Math.PI;
+        let sum = 0;
+        for (let k = 1; k <= N; k++) {
+          const m = 2 * k - 1;
+          sum += (4 / Math.PI) * (Math.sin(m * t) / m);
+        }
+        const px = padL + (i / 320) * pw;
+        const py = midY - sum * (ph * 0.36);
+        if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+    }
+
+    harmSlider.addEventListener('input', drawFourier);
+    window.addEventListener('resize', () => {
+      if (currentIndex === 3) drawLaplace();
+      if (currentIndex === 4) drawFourier();
+    });
+
+    showSlide(0);
+  </script>
+</body>
+</html>
